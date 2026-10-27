@@ -1,162 +1,186 @@
-# Multilingual IT Support Chatbot (RAG)
+<div align="center">
 
-A retrieval-augmented generation (RAG) assistant that answers IT support questions in **French, English and Arabic**, grounded in a private knowledge base. Built during my end-of-studies internship at OCP Group.
+<img src="https://capsule-render.vercel.app/api?type=venom&color=0:0b132b,50:1c2541,100:3a506b&height=230&section=header&text=Nezha%20En-Naji%20El%20Idrissi&fontSize=44&fontColor=e0fbfc&fontAlignY=40&desc=Data%20Science%20%C2%B7%20Natural%20Language%20Processing%20%C2%B7%20Retrieval-Augmented%20Generation&descAlignY=62&descSize=16&descColor=9fb3c8" width="100%"/>
 
-![Python](https://img.shields.io/badge/Python-3.x-blue?style=flat-square)
-![LangChain](https://img.shields.io/badge/LangChain-RAG-1C3C3C?style=flat-square)
-![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688?style=flat-square)
-![Streamlit](https://img.shields.io/badge/Streamlit-UI-FF4B4B?style=flat-square)
-![Status](https://img.shields.io/badge/status-functional-success?style=flat-square)
+<a href="https://github.com/NezhaIdrissi">
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=500&size=19&pause=1400&color=5BC0BE&center=true&vCenter=true&width=760&lines=I+build+language+systems+that+answer+in+three+languages.;From+sensors+to+LLMs%2C+I+ship+end-to-end.;Data+Engineering+foundation.+Data+Science+ambition.;Applicant%3A+MSc+in+Data+Science%2C+University+of+Padua+2027%2F28." alt="Typing animation" />
+</a>
+
+<br/><br/>
+
+[LinkedIn](https://linkedin.com/in/nezha-en-naji-el-idrissi-097a01364) &nbsp;|&nbsp; [Email](mailto:n.ennajielidrissi@gmail.com) &nbsp;|&nbsp; Morocco, El Kelaa des Sraghna
+
+</div>
 
 ---
 
-## Overview
+## Profile
 
-IT support teams answer the same questions repeatedly, and the answers are scattered across documents. This project indexes an IT knowledge base and lets users ask questions in natural language, in their own language. Each answer is generated from the retrieved passages instead of the model's memory, which limits hallucinations and keeps answers traceable to a source.
+I am a Data Science student with a **DUT in Data Engineering** (Mention Bien, 14.57/20), and I work where data meets language. My strongest work is a **multilingual retrieval-augmented generation system** built during my end-of-studies internship at OCP Group, which answers IT support questions in French, English and Arabic and was evaluated quantitatively rather than judged by feel.
 
-[Add a 1–2 sentence description of the real use case at OCP, if you are allowed to share it.]
+Before that, I built a full IoT health-monitoring platform (hardware, mobile app, cloud) and a SQL-backed internal web application for an automotive dealership. I like owning a system from the raw signal to the user interface, and I care about measuring whether it actually works.
 
-## Key results
+**I am applying to the MSc in Data Science at the University of Padua (2027/2028).**
 
-| Metric | Value |
+---
+
+## At a glance
+
+| | |
 |---|---|
-| Indexed chunks | 3,384+ |
-| Languages supported | French, English, Arabic |
-| RAGAS scores | approx. 0.81 – 0.83 |
-| LLM | Mistral Large |
+| **Focus** | NLP, retrieval-augmented generation, data engineering |
+| **Education** | Bachelor in Data Science (2026-2027), DUT in Data Engineering (2024-2026) |
+| **Industry experience** | OCP Group (2026), NABAM AUTO, Peugeot Citroen (2025-2026) |
+| **Languages** | Arabic (native), French, English, Italian (learning) |
+| **Looking for** | Internships and collaborations in NLP, RAG and data-driven applications |
 
-[Detail which RAGAS metrics these scores correspond to (faithfulness, answer relevancy, context precision, etc.) and on how many test questions. A precise table is far more convincing than a range.]
+---
 
-## Architecture
+## Flagship project: multilingual RAG assistant
 
+A question in French, English or Arabic goes in; a grounded answer comes out, built only from the retrieved knowledge base.
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1c2541','primaryTextColor':'#e0fbfc','primaryBorderColor':'#5bc0be','lineColor':'#5bc0be','secondaryColor':'#3a506b','tertiaryColor':'#0b132b','fontFamily':'monospace'}}}%%
+flowchart LR
+    subgraph OFFLINE["Offline: knowledge preparation"]
+        direction TB
+        A["IT knowledge base<br/>documents"] --> B["Ingestion<br/>load and clean"]
+        B --> C["Chunking<br/>3,384+ chunks"]
+        C --> D["Embedding"]
+        D --> E[("Chroma<br/>vector index")]
+    end
+
+    subgraph ONLINE["Online: question answering"]
+        direction TB
+        F["User question<br/>FR / EN / AR"] --> G["FastAPI backend"]
+        G --> H["LangChain<br/>retrieval chain"]
+        H -->|"top-k similarity search"| E
+        E -->|"relevant passages"| H
+        H --> I["Mistral Large<br/>grounded generation"]
+        I --> J["Answer<br/>from retrieved context"]
+        J --> K["Streamlit interface"]
+    end
+
+    subgraph EVAL["Evaluation"]
+        direction TB
+        L["Test questions"] --> M["RAGAS metrics<br/>approx. 0.81 to 0.83"]
+    end
+
+    J -.-> M
+
+    style OFFLINE fill:#0b132b,stroke:#3a506b,color:#e0fbfc
+    style ONLINE fill:#0b132b,stroke:#3a506b,color:#e0fbfc
+    style EVAL fill:#0b132b,stroke:#3a506b,color:#e0fbfc
 ```
-                    +---------------------+
-   Documents  --->  |  Ingestion pipeline |
- (IT knowledge      |  load, clean, chunk |
-     base)          +----------+----------+
-                               |
-                               v
-                    +---------------------+
-                    |  Chroma vector DB   |
-                    |  (embeddings index) |
-                    +----------+----------+
-                               ^
-                               | top-k retrieval
-User question  --->  +---------+-----------+  --->  Answer + sources
-  (FR / EN / AR)     |  FastAPI backend    |        (Mistral Large)
-                     |  LangChain RAG chain|
-                     +---------+-----------+
-                               ^
-                               |
-                     +---------+-----------+
-                     |  Streamlit interface|
-                     +---------------------+
-```
 
-**Pipeline in short**
-
-1. **Ingestion**: documents are loaded, cleaned and split into chunks.
-2. **Indexing**: each chunk is embedded and stored in Chroma.
-3. **Retrieval**: the question is embedded and the most relevant chunks are fetched.
-4. **Generation**: Mistral Large answers using only the retrieved context.
-5. **Serving**: a FastAPI backend exposes the chain; Streamlit provides the chat interface.
-
-## Features
-
-- Multilingual question answering in French, English and Arabic
-- Answers grounded in the knowledge base, with the source passages available
-- Clean separation between backend (FastAPI) and interface (Streamlit)
-- Quantitative evaluation of the pipeline with RAGAS
-- [Add anything else that is true: conversation memory, source display, language detection, etc.]
-
-## Tech stack
-
-| Layer | Technology |
+| | |
 |---|---|
-| Language | Python |
-| Orchestration | LangChain |
-| Vector store | Chroma |
-| LLM | Mistral Large |
-| Backend | FastAPI |
-| Frontend | Streamlit |
-| Evaluation | RAGAS |
+| **Stack** | Python, LangChain, Chroma, Mistral Large, FastAPI, Streamlit |
+| **Scale** | 3,384+ indexed chunks |
+| **Quality** | RAGAS scores approx. 0.81 to 0.83 |
+| **Languages** | French, English, Arabic |
+| **Code** | [github.com/NezhaIdrissi/chatbot-it-rag](https://github.com/NezhaIdrissi/chatbot-it-rag) |
 
-## Getting started
+---
 
-### Prerequisites
+## Project: SmartHealth, an IoT health platform from sensor to screen
 
-- Python [version]
-- A Mistral API key
+A team project covering hardware, cloud and mobile: vital signs are measured on a microcontroller, stored in the cloud and shown in real time with alerts.
 
-### Installation
-
-```bash
-git clone https://github.com/NezhaIdrissi/chatbot-it-rag.git
-cd chatbot-it-rag
-python -m venv venv
-source venv/bin/activate        # Windows: venv\Scripts\activate
-pip install -r requirements.txt
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1c2541','primaryTextColor':'#e0fbfc','primaryBorderColor':'#5bc0be','lineColor':'#5bc0be','secondaryColor':'#3a506b','tertiaryColor':'#0b132b','fontFamily':'monospace'}}}%%
+flowchart LR
+    S1["MAX30102<br/>heart rate and SpO2"] --> MCU
+    S2["MLX90614<br/>body temperature"] --> MCU
+    MCU["WeMos D1<br/>ESP8266"] -->|"Wi-Fi"| FB[("Firebase<br/>Realtime DB, Firestore, Auth")]
+    FB <-->|"live sync"| APP["Flutter app<br/>Dart"]
+    APP --> AL["Threshold alerts"]
+    APP --> AU["User authentication"]
 ```
 
-### Configuration
+---
 
-Create a `.env` file at the project root:
+## Project: internal process digitalisation at NABAM AUTO
 
-```
-MISTRAL_API_KEY=your_key_here
-```
+A register-management web application for a Peugeot Citroen dealership, built with Flask and a SQL database.
 
-### Build the index
-
-```bash
-python [ingest_script].py
-```
-
-### Run the backend
-
-```bash
-uvicorn [app.main]:app --reload
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1c2541','primaryTextColor':'#e0fbfc','primaryBorderColor':'#5bc0be','lineColor':'#5bc0be','secondaryColor':'#3a506b','tertiaryColor':'#0b132b','fontFamily':'monospace'}}}%%
+flowchart TB
+    U["Staff user"] --> W["Flask-WTF<br/>validated forms"]
+    U --> L["Flask-Login<br/>sessions and access"]
+    W --> F["Flask application<br/>business logic"]
+    L --> F
+    F --> O["Flask-SQLAlchemy<br/>data layer"]
+    O --> D[("SQL database<br/>registers")]
 ```
 
-### Run the interface
+---
 
-```bash
-streamlit run [app.py]
+## Path
+
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'cScale0':'#1c2541','cScale1':'#3a506b','cScale2':'#5bc0be','cScaleLabel0':'#e0fbfc','cScaleLabel1':'#e0fbfc','cScaleLabel2':'#0b132b','fontFamily':'monospace'}}}%%
+timeline
+    title From physical sciences to language systems
+    2024 : Scientific Baccalaureate, Physical Sciences, Mention Bien
+         : Starts the DUT in Data Engineering
+    2025 : Introductory internship at NABAM AUTO
+         : Flask and SQL application for internal registers
+         : Generative AI course
+    2026 : DUT completed, Mention Bien, 14.57/20
+         : Technical internship at OCP Group
+         : End-of-studies project, multilingual RAG assistant
+         : NLP and Text Mining certification
+         : Starts the Bachelor in Data Science
+    2027 : Bachelor in Data Science in progress
+         : Applying to the MSc in Data Science, University of Padua
 ```
 
-## Evaluation
+---
 
-The system was evaluated with RAGAS on [number] questions covering [categories]. Scores are in the 0.81 – 0.83 range.
+## Technical map
 
-[Insert a table with one row per RAGAS metric. Add one sentence on what you improved based on the evaluation (chunk size, top-k, prompt, etc.): this is what shows engineering maturity.]
-
-## Project structure
-
+```mermaid
+%%{init: {'theme':'base','themeVariables':{'fontFamily':'monospace'}}}%%
+mindmap
+  root((Nezha))
+    AI and NLP
+      Retrieval-augmented generation
+      LangChain
+      Chroma vector database
+      Mistral Large
+      RAGAS evaluation
+      Text mining
+    Backend and web
+      FastAPI
+      Flask
+      Flask-SQLAlchemy
+      Streamlit
+    Mobile and IoT
+      Flutter and Dart
+      Firebase
+      ESP8266
+      Biomedical sensors
+    Data
+      Python
+      SQL
+      Database design
+      Data visualisation
 ```
-chatbot-it-rag/
-├── [data/]            knowledge base documents
-├── [ingestion/]       loading, chunking, indexing
-├── [backend/]         FastAPI application and RAG chain
-├── [frontend/]        Streamlit interface
-├── [evaluation/]      RAGAS scripts and test questions
-├── requirements.txt
-└── README.md
-```
 
-## Design decisions
+| Domain | Tools |
+|---|---|
+| **AI and NLP** | LangChain, Chroma, Mistral Large, RAG, RAGAS |
+| **Backend and web** | FastAPI, Flask, Flask-SQLAlchemy, Flask-Login, Flask-WTF, Streamlit |
+| **Mobile and IoT** | Flutter, Dart, Firebase, ESP8266, MAX30102, MLX90614 |
+| **Data** | Python, SQL, database design, data visualisation |
 
-- **Why RAG instead of fine-tuning**: the knowledge base changes often, and RAG updates by re-indexing, with no retraining.
-- **Why multilingual**: users write in the language they are most comfortable with; the system answers accordingly.
-- [Add 1–2 real decisions: why Chroma, why this chunk size, how Arabic is handled.]
+---
 
-## Limitations and next steps
+## Education and certifications
 
-- [Honest limitation, for example: Arabic retrieval quality compared with French]
-- [Possible improvement, for example: hybrid search (BM25 + vectors), re-ranking, user feedback loop]
-- [Possible improvement, for example: Docker deployment, automatic re-indexing]
-
-## Author
-
-**Nezha En-Naji El Idrissi**, Data Science student, applicant to the MSc in Data Science at the University of Padua.
-
-[LinkedIn](https://linkedin.com/in/nezha-en-naji-el-idrissi-097a01364) · [Email](mailto:n.ennajielidrissi@gmail.com)
+| Period | Qualification |
+|---|---|
+| 2026 - 2027 |
