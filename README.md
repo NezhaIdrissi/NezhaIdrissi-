@@ -40,8 +40,6 @@ My path started with a Scientific Baccalaureate in Physical Sciences, continued 
 
 My academic objective is to pursue an **MSc in Data Science at the University of Padua** starting in the 2027/2028 academic year.
 
-<!-- VERIFY: confirm this objective is still accurate. Do not change to "applying/admitted" unless true. -->
-
 <img src="assets/divider.svg" alt="" width="100%"/>
 
 ## Featured project: Multilingual RAG Assistant
@@ -85,10 +83,6 @@ A question in French should find the right passage even when the passage is writ
 
 The system was evaluated with **RAGAS**, with reported scores between approximately **0.81 and 0.83**.
 
-<!-- VERIFY: replace with a table of exact RAGAS metric names, one score per metric
-     (e.g. faithfulness, answer relevancy, context precision/recall), plus the size
-     and language split of the test set. Never present them as one combined score. -->
-
 ### Technical considerations
 
 - **Grounded generation** constrains the language model to retrieved evidence, which reduces unsupported answers and makes them easier to audit.
@@ -100,8 +94,6 @@ The system was evaluated with **RAGAS**, with reported scores between approximat
 - Compare retrieval strategies and embedding models.
 - Extend the test set and document failure cases.
 
-<!-- VERIFY: replace with real limitations documented in the repository. -->
-
 <img src="assets/divider.svg" alt="" width="100%"/>
 
 ## SmartHealth: IoT health monitoring platform
@@ -112,7 +104,6 @@ A **team project** covering hardware, cloud and mobile development: vital signs 
 
 **Stack:** MAX30102, MLX90614, WeMos D1 (ESP8266), Firebase, Flutter, Dart.
 
-<!-- VERIFY: state precisely which parts were Nezha's own contribution (firmware, Firebase, app screens). Confirm which Firebase services are used. -->
 
 <img src="assets/divider.svg" alt="" width="100%"/>
 
@@ -124,8 +115,6 @@ A **team project** covering hardware, cloud and mobile development: vital signs 
 <img src="assets/flask-architecture.svg" alt="NABAM AUTO architecture: a staff user goes through Flask-Login and Flask-WTF to a Flask application, which uses Flask-SQLAlchemy to store registers in a SQL database." width="100%"/>
 
 **Stack:** Flask, Flask-SQLAlchemy, Flask-Login, Flask-WTF, SQL.
-
-<!-- VERIFY: dates (the previous README gave two different periods), company wording, exact registers handled. No performance or business-impact figures unless documented. -->
 
 <img src="assets/divider.svg" alt="" width="100%"/>
 
@@ -146,9 +135,9 @@ A **team project** covering hardware, cloud and mobile development: vital signs 
 
 | Period | Milestone |
 |---|---|
-| 2024 | Scientific Baccalaureate, Physical Sciences <!-- VERIFY: mention/grade before adding --> |
-| 2024–2026 | DUT in Data Engineering: *Mention Bien*, 14.57/20 |
-| 2025 | NABAM AUTO: Flask and SQL application for internal registers <!-- VERIFY: dates --> |
+| 2024 | Scientific Baccalaureate, Physical Sciences |
+| 2024–2026 | DUT in Data Engineering: *Mention Bien* |
+| 2025 | NABAM AUTO: Flask and SQL application for internal registers |
 | 2026 | OCP Group internship: multilingual RAG assistant |
 | 2026–2027 | Bachelor in Data Science (in progress) |
 | 2027/2028 | Academic objective: MSc in Data Science, University of Padua |
@@ -161,15 +150,15 @@ A **team project** covering hardware, cloud and mobile development: vital signs 
 
 | Period | Qualification | Institution |
 |---|---|---|
-| 2026–2027 | Bachelor in Data Science | <!-- VERIFY: institution --> |
-| 2024–2026 | DUT in Data Engineering, *Mention Bien* (14.57/20) | <!-- VERIFY: institution --> |
-| 2024 | Scientific Baccalaureate, Physical Sciences | <!-- VERIFY: school --> |
+| 2026–2027 | Bachelor in Data Science | Higher School of Technology El Kellaa des Sraghnas |
+| 2024–2026 | DUT in Data Engineering, *Mention Bien* |Higher School of Technology El Kellaa des Sraghnas |
+| 2024 | Scientific Baccalaureate, Physical Sciences | Al Maghreb Al Arabi |
 
 ### Certifications
 
 | Certification | Issuer | Verification |
 |---|---|---|
-| NLP and Text Mining | <!-- VERIFY --> | <!-- VERIFY: real link only --> |
+| NLP and Text Mining | SimpliLearn| <!-- VERIFY: real link only --> |
 | Generative AI course | <!-- VERIFY --> | <!-- VERIFY: real link only --> |
 
 <img src="assets/divider.svg" alt="" width="100%"/>
@@ -194,4 +183,4 @@ I am open to academic collaborations, internships and technical projects in Data
 - **LinkedIn:** [nezha-en-naji-el-idrissi](https://linkedin.com/in/nezha-en-naji-el-idrissi-097a01364)
 - **Email:** [n.ennajielidrissi@gmail.com](mailto:n.ennajielidrissi@gmail.com)
 - **GitHub:** [NezhaIdrissi](https://github.com/NezhaIdrissi)
-<!-- Optional: add a "View CV" link here once the PDF is stored in the repository, e.g. [View CV](assets/cv.pdf) -->
+- **CV:** [View CV](assets/cv.pdf) 
