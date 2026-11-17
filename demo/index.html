@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Multilingual semantic space · Nezha En-Naji El Idrissi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B132B;--panel:#1C2541;--line:#3A506B;--teal:#5BC0BE;--ink:#E0FBFC;--mute:#9FB3C8;--amber:#F4B183}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(ellipse at 50% 40%,#16204a 0,var(--bg) 70%);color:var(--ink);font:15px/1.5 'IBM Plex Sans',system-ui,sans-serif;overflow:hidden}
+canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+canvas:active{cursor:grabbing}
+header{position:fixed;top:20px;left:24px;right:24px;max-width:460px;pointer-events:none}
+h1{font:500 28px/1.15 'Newsreader',Georgia,serif;margin:0 0 8px}
+header p{margin:0;color:var(--mute);font-size:14px}
+#panel{position:fixed;left:16px;right:16px;bottom:16px;background:rgba(28,37,65,.86);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+#chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+button{font:inherit;font-size:14px;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;transition:background .2s,border-color .2s}
+button:hover{border-color:var(--teal)}
+button[aria-pressed=true]{background:var(--teal);border-color:var(--teal);color:var(--bg);font-weight:500}
+button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+ol{list-style:none;margin:0;padding:0;font-size:13px}
+li{display:flex;gap:10px;align-items:baseline;padding:3px 0;border-top:1px solid rgba(58,80,107,.5)}
+li .tag{flex:none;width:28px;font-weight:500}
+li bdi{color:var(--ink)}
+.note{margin:8px 0 0;color:var(--mute);font-size:12px}
+#legend{position:fixed;left:24px;top:132px;margin:0;padding:0;list-style:none;font-size:13px;color:var(--mute);display:flex;gap:14px;pointer-events:none}
+#legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+@media(min-width:900px){
+ header{top:28px;left:32px}
+ #legend{top:140px;left:32px}
+ #panel{left:auto;right:28px;top:28px;bottom:auto;width:400px}
+}
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="3D scatter of document chunks grouped by topic. Drag to rotate, scroll to zoom."></canvas>
+<header>
+  <h1>Where a question lands in a multilingual index</h1>
+  <p>Each point is a document chunk, coloured by language. Chunks on the same topic sit together whatever their language. Pick a question to see which chunks a retriever would return. Drag to rotate, scroll to zoom.</p>
+</header>
+<ul id="legend"><li><i style="background:#5BC0BE"></i>French</li><li><i style="background:#E0FBFC"></i>English</li><li><i style="background:#F4B183"></i>Arabic</li></ul>
+<section id="panel">
+  <div id="chips" role="group" aria-label="Sample questions"></div>
+  <ol id="res" aria-live="polite"></ol>
+  <p class="note">Illustration only: the points and chunk titles are synthetic, not the embeddings of the actual project.</p>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const LC=[0x5BC0BE,0xE0FBFC,0xF4B183],LT=['FR','EN','AR'],LCSS=['#5BC0BE','#E0FBFC','#F4B183'];
+const TITLES=[
+ [['Configurer le client VPN','Erreurs de connexion VPN'],['Troubleshooting VPN connection errors','Install the VPN client'],['إعداد اتصال VPN','حل مشاكل الاتصال بالشبكة الخاصة']],
+ [['Réinitialiser son mot de passe','Politique des mots de passe'],['Reset your account password','Password expiry rules'],['إعادة تعيين كلمة المرور','سياسة كلمات المرور']],
+ [['Ajouter une imprimante réseau','Imprimante hors ligne'],['Set up a network printer','Printer shows offline'],['إضافة طابعة على الشبكة','الطابعة لا تعمل']]];
+const QUERIES=[{l:0,t:"Mon VPN ne se connecte plus",topic:0},{l:1,t:"How do I reset my password?",topic:1},{l:2,t:"الطابعة لا تطبع",topic:2,rtl:1}];
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
+const gauss=()=>{let u=0;while(!u)u=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*rnd())};
+const sprite=(a)=>{const k=document.createElement('canvas');k.width=k.height=64;const x=k.getContext('2d'),g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(255,255,255,'+a+')');g.addColorStop(.4,'rgba(255,255,255,'+a*.8+')');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,64,64);return new THREE.CanvasTexture(k)};
+const cv=document.getElementById('c'),R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+R.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(50,1,.1,100),G=new THREE.Group();scene.add(G);
+const centers=[[-3.2,.6,0],[2.6,1.4,-1.2],[.4,-2.2,1.8]].map(a=>new THREE.Vector3(...a));
+const pts=[];for(let t=0;t<3;t++)for(let i=0;i<66;i++)pts.push({t,l:i%3,k:Math.floor(i/3)%2,p:centers[t].clone().add(new THREE.Vector3(gauss(),gauss(),gauss()).multiplyScalar(.75))});
+const pos=new Float32Array(pts.length*3),col=new Float32Array(pts.length*3);
+pts.forEach((o,i)=>{o.p.toArray(pos,i*3);new THREE.Color(LC[o.l]).toArray(col,i*3)});
+const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(pos,3));geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+const tex=sprite(1);
+G.add(new THREE.Points(geo,new THREE.PointsMaterial({size:.26,vertexColors:true,map:tex,transparent:true,depthWrite:false,alphaTest:.02})));
+const halo=sprite(.18);centers.forEach(c=>{const h=new THREE.Sprite(new THREE.SpriteMaterial({map:halo,color:0x5BC0BE,depthWrite:false}));h.position.copy(c);h.scale.set(6,6,1);G.add(h)});
+const hlG=new THREE.BufferGeometry();hlG.setAttribute('position',new THREE.BufferAttribute(new Float32Array(15),3));
+const hl=new THREE.Points(hlG,new THREE.PointsMaterial({size:.62,color:0xffffff,map:tex,transparent:true,opacity:.9,depthWrite:false,alphaTest:.02}));hl.visible=false;G.add(hl);
+const lnG=new THREE.BufferGeometry();lnG.setAttribute('position',new THREE.BufferAttribute(new Float32Array(30),3));
+const ln=new THREE.LineSegments(lnG,new THREE.LineBasicMaterial({color:0x5BC0BE,transparent:true,opacity:.85}));ln.visible=false;G.add(ln);
+const q=new THREE.Mesh(new THREE.SphereGeometry(.17,24,24),new THREE.MeshBasicMaterial({color:0x5BC0BE}));q.visible=false;G.add(q);
+const ring=new THREE.Sprite(new THREE.SpriteMaterial({map:sprite(.5),color:0x5BC0BE,depthWrite:false}));q.add(ring);
+let fly=null;
+function run(i){
+  document.querySelectorAll('#chips button').forEach((b,j)=>b.setAttribute('aria-pressed',j==i));
+  hl.visible=ln.visible=false;res.innerHTML='';
+  const to=centers[QUERIES[i].topic].clone().add(new THREE.Vector3(gauss(),gauss(),gauss()).multiplyScalar(.15));
+  const from=new THREE.Vector3(gauss(),gauss(),gauss()).normalize().multiplyScalar(8);
+  q.visible=true;fly={from,to,t0:performance.now(),dur:reduce?1:1400};
+}
+function land(to){
+  const top=pts.map(o=>({o,d:o.p.distanceTo(to)})).sort((a,b)=>a.d-b.d).slice(0,5);
+  const hp=hlG.attributes.position,lp=lnG.attributes.position;
+  top.forEach((e,i)=>{e.o.p.toArray(hp.array,i*3);to.toArray(lp.array,i*6);e.o.p.toArray(lp.array,i*6+3)});
+  hp.needsUpdate=lp.needsUpdate=true;hl.visible=ln.visible=true;
+  res.innerHTML=top.map((e,i)=>`<li><span class="tag" style="color:${LCSS[e.o.l]}">${LT[e.o.l]}</span><bdi>${TITLES[e.o.t][e.o.l][e.o.k]}</bdi></li>`).join('');
+}
+const chips=document.getElementById('chips'),res=document.getElementById('res');
+QUERIES.forEach((o,i)=>{const b=document.createElement('button');b.innerHTML=`<span style="opacity:.7">${LT[o.l]}</span> <bdi${o.rtl?' dir="rtl"':''}>${o.t}</bdi>`;b.onclick=()=>run(i);b.setAttribute('aria-pressed','false');chips.appendChild(b)});
+let dragging=false,lx=0,ly=0,vx=0,vy=0,z=13;
+cv.addEventListener('pointerdown',e=>{dragging=true;lx=e.clientX;ly=e.clientY;cv.setPointerCapture(e.pointerId)});
+cv.addEventListener('pointermove',e=>{if(!dragging)return;vy=(e.clientX-lx)*.006;vx=(e.clientY-ly)*.006;lx=e.clientX;ly=e.clientY;G.rotation.y+=vy;G.rotation.x=Math.max(-1.2,Math.min(1.2,G.rotation.x+vx))});
+cv.addEventListener('pointerup',()=>dragging=false);
+cv.addEventListener('wheel',e=>{e.preventDefault();z=Math.max(7,Math.min(18,z+e.deltaY*.01))},{passive:false});
+function size(){const w=innerWidth,h=innerHeight;R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix()}
+addEventListener('resize',size);size();
+const ease=t=>1-Math.pow(1-t,3);
+(function loop(now){
+  requestAnimationFrame(loop);
+  if(!dragging){G.rotation.y+=reduce?0:.0016+vy;vy*=.95}
+  cam.position.set(0,0,innerWidth<700?z*1.25:z);cam.lookAt(innerWidth>=900?-1.5:0,innerWidth<900?1:0,0);
+  if(fly){const k=Math.min(1,(now-fly.t0)/fly.dur);q.position.lerpVectors(fly.from,fly.to,ease(k));if(k>=1){land(fly.to);fly=null}}
+  if(q.visible){const p=1+.3*Math.sin(now/300);ring.scale.set(1.4*p,1.4*p,1)}
+  R.render(scene,cam);
+})(0);
+run(0);
+</script>
+</body>
+</html>
