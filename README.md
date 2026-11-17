@@ -1,186 +1,218 @@
+<!--
+  MAINTENANCE NOTES (invisible on GitHub). Items marked VERIFY could not be checked
+  against the repositories and must be confirmed before publishing.
+-->
+
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=venom&color=0:0b132b,50:1c2541,100:3a506b&height=230&section=header&text=Nezha%20En-Naji%20El%20Idrissi&fontSize=44&fontColor=e0fbfc&fontAlignY=40&desc=Data%20Science%20%C2%B7%20Natural%20Language%20Processing%20%C2%B7%20Retrieval-Augmented%20Generation&descAlignY=62&descSize=16&descColor=9fb3c8" width="100%"/>
+<img src="assets/banner.svg" alt="Nezha En-Naji El Idrissi: Data Science, NLP and Retrieval-Augmented Generation" width="100%"/>
 
-<a href="https://github.com/NezhaIdrissi">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=500&size=19&pause=1400&color=5BC0BE&center=true&vCenter=true&width=760&lines=I+build+language+systems+that+answer+in+three+languages.;From+sensors+to+LLMs%2C+I+ship+end-to-end.;Data+Engineering+foundation.+Data+Science+ambition.;Applicant%3A+MSc+in+Data+Science%2C+University+of+Padua+2027%2F28." alt="Typing animation" />
-</a>
+**Data Science Student | NLP & Retrieval-Augmented Generation | Data Engineering**
 
-<br/><br/>
+I build data and language systems end to end, from data preparation to deployment and evaluation.
 
-[LinkedIn](https://linkedin.com/in/nezha-en-naji-el-idrissi-097a01364) &nbsp;|&nbsp; [Email](mailto:n.ennajielidrissi@gmail.com) &nbsp;|&nbsp; Morocco, El Kelaa des Sraghna
+[LinkedIn](https://linkedin.com/in/nezha-en-naji-el-idrissi-097a01364) &nbsp;·&nbsp; [Email](mailto:n.ennajielidrissi@gmail.com) &nbsp;·&nbsp; El Kelaa des Sraghna, Morocco
 
 </div>
 
 ---
 
-## Profile
+## About
 
-I am a Data Science student with a **DUT in Data Engineering** (Mention Bien, 14.57/20), and I work where data meets language. My strongest work is a **multilingual retrieval-augmented generation system** built during my end-of-studies internship at OCP Group, which answers IT support questions in French, English and Arabic and was evaluated quantitatively rather than judged by feel.
+I hold a **DUT in Data Engineering** (2024–2026, *Mention Bien*, 14.57/20) and I am currently pursuing a **Bachelor in Data Science** (2026–2027). My work sits at the intersection of data engineering, machine learning and language technologies.
 
-Before that, I built a full IoT health-monitoring platform (hardware, mobile app, cloud) and a SQL-backed internal web application for an automotive dealership. I like owning a system from the raw signal to the user interface, and I care about measuring whether it actually works.
+My main project is a **multilingual Retrieval-Augmented Generation (RAG) assistant** for IT support questions in French, English and Arabic, developed during my internship at OCP Group and evaluated with quantitative metrics. Alongside it, I have built an IoT health-monitoring platform (as part of a team) and a Flask web application for internal process management.
 
-**I am applying to the MSc in Data Science at the University of Padua (2027/2028).**
-
----
-
-## At a glance
+I like to follow a system from raw data to a usable interface, and to measure whether it actually works.
 
 | | |
 |---|---|
-| **Focus** | NLP, retrieval-augmented generation, data engineering |
-| **Education** | Bachelor in Data Science (2026-2027), DUT in Data Engineering (2024-2026) |
-| **Industry experience** | OCP Group (2026), NABAM AUTO, Peugeot Citroen (2025-2026) |
-| **Languages** | Arabic (native), French, English, Italian (learning) |
-| **Looking for** | Internships and collaborations in NLP, RAG and data-driven applications |
+| **Focus** | NLP, Information Retrieval, RAG, data engineering |
+| **Education** | Bachelor in Data Science (2026–2027) · DUT in Data Engineering (2024–2026) |
+| **Experience** | OCP Group internship (2026) · NABAM AUTO |
+| **Languages** | Arabic (native) · French · English · Italian (learning) |
+| **Open to** | Internships, academic collaborations and technical projects in Data Science and NLP |
 
 ---
 
-## Flagship project: multilingual RAG assistant
+## Academic direction
 
-A question in French, English or Arabic goes in; a grounded answer comes out, built only from the retrieved knowledge base.
+My path started with a Scientific Baccalaureate in Physical Sciences, continued with a DUT in Data Engineering, and now with a Bachelor in Data Science. Across these stages my interests have moved from data pipelines and databases toward NLP, information retrieval and applied AI.
+
+My academic objective is to pursue an **MSc in Data Science at the University of Padua** starting in the 2027/2028 academic year.
+
+<!-- VERIFY: confirm this objective is still accurate. Do not change to "applying/admitted" unless true. -->
+
+---
+
+## Featured project: Multilingual RAG Assistant
+
+**Repository:** [NezhaIdrissi/chatbot-it-rag](https://github.com/NezhaIdrissi/chatbot-it-rag)
+
+### Problem and objective
+
+IT support knowledge is often scattered across documents, and users ask questions in different languages. The goal was an assistant that answers in **French, English and Arabic**, using only the content of a knowledge base, so that answers can be traced back to retrieved passages instead of relying on the model's general memory.
+
+### Architecture
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1c2541','primaryTextColor':'#e0fbfc','primaryBorderColor':'#5bc0be','lineColor':'#5bc0be','secondaryColor':'#3a506b','tertiaryColor':'#0b132b','fontFamily':'monospace'}}}%%
 flowchart LR
     subgraph OFFLINE["Offline: knowledge preparation"]
         direction TB
-        A["IT knowledge base<br/>documents"] --> B["Ingestion<br/>load and clean"]
-        B --> C["Chunking<br/>3,384+ chunks"]
-        C --> D["Embedding"]
-        D --> E[("Chroma<br/>vector index")]
+        A["IT knowledge base"] --> B["Ingestion and cleaning"]
+        B --> C["Chunking"]
+        C --> D["Embeddings"]
+        D --> E[("Chroma vector index")]
     end
 
     subgraph ONLINE["Online: question answering"]
         direction TB
-        F["User question<br/>FR / EN / AR"] --> G["FastAPI backend"]
-        G --> H["LangChain<br/>retrieval chain"]
-        H -->|"top-k similarity search"| E
-        E -->|"relevant passages"| H
-        H --> I["Mistral Large<br/>grounded generation"]
-        I --> J["Answer<br/>from retrieved context"]
+        F["Question in FR / EN / AR"] --> G["FastAPI backend"]
+        G --> H["Retrieval via LangChain"]
+        H --> I["Mistral Large generation"]
+        I --> J["Grounded answer"]
         J --> K["Streamlit interface"]
     end
 
-    subgraph EVAL["Evaluation"]
-        direction TB
-        L["Test questions"] --> M["RAGAS metrics<br/>approx. 0.81 to 0.83"]
-    end
-
-    J -.-> M
-
-    style OFFLINE fill:#0b132b,stroke:#3a506b,color:#e0fbfc
-    style ONLINE fill:#0b132b,stroke:#3a506b,color:#e0fbfc
-    style EVAL fill:#0b132b,stroke:#3a506b,color:#e0fbfc
+    E -->|"top-k similar chunks"| H
 ```
 
-| | |
+### How it works
+
+| Stage | Description |
 |---|---|
-| **Stack** | Python, LangChain, Chroma, Mistral Large, FastAPI, Streamlit |
-| **Scale** | 3,384+ indexed chunks |
-| **Quality** | RAGAS scores approx. 0.81 to 0.83 |
-| **Languages** | French, English, Arabic |
-| **Code** | [github.com/NezhaIdrissi/chatbot-it-rag](https://github.com/NezhaIdrissi/chatbot-it-rag) |
+| **Ingestion and preprocessing** | Knowledge-base documents are loaded and cleaned. |
+| **Chunking** | Documents are split into passages, producing **3,384+ indexed chunks**. <!-- VERIFY: figure, chunk size and overlap --> |
+| **Embeddings and indexing** | Chunks are embedded and stored in a Chroma vector index. <!-- VERIFY: embedding model name --> |
+| **Retrieval** | The question is matched against the index and the most similar chunks are returned. <!-- VERIFY: top-k value --> |
+| **Generation** | Mistral Large answers from the retrieved context. |
+| **Serving** | A FastAPI backend exposes the pipeline; a Streamlit interface lets users ask questions. |
+
+### Evaluation
+
+The system was evaluated with **RAGAS**, with reported scores between approximately **0.81 and 0.83**.
+
+<!-- VERIFY: replace with a table of exact RAGAS metric names, one score per metric
+     (e.g. faithfulness, answer relevancy, context precision/recall), plus the size
+     and language split of the test set. Never present them as one combined score. -->
+
+### Why it matters technically
+
+- **Multilingual retrieval** requires embeddings and an index that place questions and documents in a shared semantic space, so a question in one language can match content written in another.
+- **Grounded generation** constrains the language model to retrieved evidence, which reduces unsupported answers and makes them easier to audit.
+- **Systematic evaluation** replaces subjective impressions with measurable criteria.
+
+### Possible next steps (not implemented)
+
+- Report evaluation results separately for each language.
+- Compare retrieval strategies and embedding models.
+- Extend the test set and document failure cases.
+
+<!-- VERIFY: replace with real limitations documented in the repository. -->
 
 ---
 
-## Project: SmartHealth, an IoT health platform from sensor to screen
+## SmartHealth: IoT health monitoring platform
 
-A team project covering hardware, cloud and mobile: vital signs are measured on a microcontroller, stored in the cloud and shown in real time with alerts.
+A **team project** covering hardware, cloud and mobile development: vital signs are measured by sensors, sent over Wi-Fi, stored in the cloud and displayed in real time with alerts.
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1c2541','primaryTextColor':'#e0fbfc','primaryBorderColor':'#5bc0be','lineColor':'#5bc0be','secondaryColor':'#3a506b','tertiaryColor':'#0b132b','fontFamily':'monospace'}}}%%
 flowchart LR
-    S1["MAX30102<br/>heart rate and SpO2"] --> MCU
+    S1["MAX30102<br/>heart rate and SpO2"] --> MCU["WeMos D1<br/>ESP8266"]
     S2["MLX90614<br/>body temperature"] --> MCU
-    MCU["WeMos D1<br/>ESP8266"] -->|"Wi-Fi"| FB[("Firebase<br/>Realtime DB, Firestore, Auth")]
-    FB <-->|"live sync"| APP["Flutter app<br/>Dart"]
-    APP --> AL["Threshold alerts"]
-    APP --> AU["User authentication"]
+    MCU -->|"Wi-Fi"| FB[("Firebase")]
+    FB <-->|"real-time sync"| APP["Flutter app (Dart)"]
+    APP --> AL["Alerts"]
+    APP --> AU["Authentication"]
 ```
 
+**Stack:** MAX30102, MLX90614, WeMos D1 (ESP8266), Firebase, Flutter, Dart.
+
+<!-- VERIFY: state precisely which parts were Nezha's own contribution (e.g. firmware, Firebase, app screens). Also confirm which Firebase services are used (Realtime Database, Firestore, Auth). -->
+
 ---
 
-## Project: internal process digitalisation at NABAM AUTO
+## NABAM AUTO: internal process digitalisation
 
-A register-management web application for a Peugeot Citroen dealership, built with Flask and a SQL database.
+**Problem:** internal registers at a car dealership needed a structured, controlled way of being recorded and consulted.
+**Solution:** a Flask web application backed by a SQL database, with validated forms and role-based access.
 
 ```mermaid
-%%{init: {'theme':'base','themeVariables':{'primaryColor':'#1c2541','primaryTextColor':'#e0fbfc','primaryBorderColor':'#5bc0be','lineColor':'#5bc0be','secondaryColor':'#3a506b','tertiaryColor':'#0b132b','fontFamily':'monospace'}}}%%
 flowchart TB
-    U["Staff user"] --> W["Flask-WTF<br/>validated forms"]
-    U --> L["Flask-Login<br/>sessions and access"]
-    W --> F["Flask application<br/>business logic"]
-    L --> F
-    F --> O["Flask-SQLAlchemy<br/>data layer"]
+    U["Staff user"] --> L["Flask-Login<br/>sessions and access"]
+    U --> W["Flask-WTF<br/>validated forms"]
+    L --> F["Flask application"]
+    W --> F
+    F --> O["Flask-SQLAlchemy"]
     O --> D[("SQL database<br/>registers")]
 ```
 
----
+**Stack:** Flask, Flask-SQLAlchemy, Flask-Login, Flask-WTF, SQL.
 
-## Path
-
-```mermaid
-%%{init: {'theme':'base','themeVariables':{'cScale0':'#1c2541','cScale1':'#3a506b','cScale2':'#5bc0be','cScaleLabel0':'#e0fbfc','cScaleLabel1':'#e0fbfc','cScaleLabel2':'#0b132b','fontFamily':'monospace'}}}%%
-timeline
-    title From physical sciences to language systems
-    2024 : Scientific Baccalaureate, Physical Sciences, Mention Bien
-         : Starts the DUT in Data Engineering
-    2025 : Introductory internship at NABAM AUTO
-         : Flask and SQL application for internal registers
-         : Generative AI course
-    2026 : DUT completed, Mention Bien, 14.57/20
-         : Technical internship at OCP Group
-         : End-of-studies project, multilingual RAG assistant
-         : NLP and Text Mining certification
-         : Starts the Bachelor in Data Science
-    2027 : Bachelor in Data Science in progress
-         : Applying to the MSc in Data Science, University of Padua
-```
+<!-- VERIFY: dates (the previous README gave two different periods), the company name wording, and the exact registers handled. No performance or business-impact figures should be added unless documented. -->
 
 ---
 
-## Technical map
+## Technical expertise
 
-```mermaid
-%%{init: {'theme':'base','themeVariables':{'fontFamily':'monospace'}}}%%
-mindmap
-  root((Nezha))
-    AI and NLP
-      Retrieval-augmented generation
-      LangChain
-      Chroma vector database
-      Mistral Large
-      RAGAS evaluation
-      Text mining
-    Backend and web
-      FastAPI
-      Flask
-      Flask-SQLAlchemy
-      Streamlit
-    Mobile and IoT
-      Flutter and Dart
-      Firebase
-      ESP8266
-      Biomedical sensors
-    Data
-      Python
-      SQL
-      Database design
-      Data visualisation
-```
-
-| Domain | Tools |
+| Domain | Technologies |
 |---|---|
-| **AI and NLP** | LangChain, Chroma, Mistral Large, RAG, RAGAS |
-| **Backend and web** | FastAPI, Flask, Flask-SQLAlchemy, Flask-Login, Flask-WTF, Streamlit |
-| **Mobile and IoT** | Flutter, Dart, Firebase, ESP8266, MAX30102, MLX90614 |
-| **Data** | Python, SQL, database design, data visualisation |
+| **AI, NLP & Information Retrieval** | Retrieval-Augmented Generation · LangChain · Chroma · Mistral · RAGAS · Text Mining |
+| **Data Engineering & Databases** | Python · SQL · Database Design · Data Processing |
+| **Backend & Application Development** | FastAPI · Flask · Flask-SQLAlchemy · Streamlit |
+| **Mobile & IoT** | Flutter · Dart · Firebase · ESP8266 · MAX30102 · MLX90614 |
+
+---
+
+## Timeline
+
+| Period | Milestone |
+|---|---|
+| 2024 | Scientific Baccalaureate, Physical Sciences <!-- VERIFY: mention/grade before adding --> |
+| 2024–2026 | DUT in Data Engineering: *Mention Bien*, 14.57/20 |
+| 2025 | NABAM AUTO: Flask and SQL application for internal registers <!-- VERIFY: dates --> |
+| 2026 | OCP Group internship: multilingual RAG assistant |
+| 2026–2027 | Bachelor in Data Science (in progress) |
+| 2027/2028 | Academic objective: MSc in Data Science, University of Padua |
 
 ---
 
 ## Education and certifications
 
-| Period | Qualification |
-|---|---|
-| 2026 - 2027 |
+### Education
+
+| Period | Qualification | Institution |
+|---|---|---|
+| 2026–2027 | Bachelor in Data Science | <!-- VERIFY: institution --> |
+| 2024–2026 | DUT in Data Engineering, *Mention Bien* (14.57/20) | <!-- VERIFY: institution --> |
+| 2024 | Scientific Baccalaureate, Physical Sciences | <!-- VERIFY: school --> |
+
+### Certifications
+
+| Certification | Issuer | Verification |
+|---|---|---|
+| NLP and Text Mining | <!-- VERIFY --> | <!-- VERIFY: real link only --> |
+| Generative AI course | <!-- VERIFY --> | <!-- VERIFY: real link only --> |
+
+---
+
+## Research interests
+
+These are areas I want to study and work on, not completed research.
+
+- Multilingual NLP
+- Semantic search and information retrieval
+- Retrieval-Augmented Generation
+- Evaluation of LLM-based systems
+- Data engineering for AI applications
+- Applied machine learning
+
+---
+
+## Contact
+
+I am open to academic collaborations, internships and technical projects in Data Science and NLP.
+
+- **LinkedIn:** [nezha-en-naji-el-idrissi](https://linkedin.com/in/nezha-en-naji-el-idrissi-097a01364)
+- **Email:** [n.ennajielidrissi@gmail.com](mailto:n.ennajielidrissi@gmail.com)
+- **GitHub:** [NezhaIdrissi](https://github.com/NezhaIdrissi)
